@@ -1,7 +1,7 @@
 class Hsin < Formula
   desc "Daemon-first provider switcher for Codex and Claude Code"
   homepage "https://github.com/KyuubiRan/hsin.rs"
-  version "0.1.2"
+  version "0.1.3"
   license "MIT"
 
   depends_on arch: :arm64 if OS.mac?
@@ -9,18 +9,18 @@ class Hsin < Formula
   on_macos do
     on_arm do
       url "https://github.com/KyuubiRan/hsin.rs/releases/download/v#{version}/hsin-#{version}-aarch64-apple-darwin.tar.gz"
-      sha256 "f211f53b1e0a3e7d530a9f97221b4480879ccbc5d07092f64f7d79c67d81ee69"
+      sha256 "3fd1da2e52ab35f5df03ee330d3e9e196a5aa4dd80807c7a263cdab055a2a9b3"
     end
   end
 
   on_linux do
     on_arm do
       url "https://github.com/KyuubiRan/hsin.rs/releases/download/v#{version}/hsin-#{version}-aarch64-unknown-linux-gnu.tar.gz"
-      sha256 "47862bd7e8701f1465db7718b6aa96724af8fd6e38285e7197617a3b6babdb6a"
+      sha256 "ca9939f62dda6bd1566ecd763a70240c2e61b8371f0080569e6745132f63ec10"
     end
     on_intel do
       url "https://github.com/KyuubiRan/hsin.rs/releases/download/v#{version}/hsin-#{version}-x86_64-unknown-linux-gnu.tar.gz"
-      sha256 "e99f6c99b1b4690faf3a644ec53639e01117232b2ac9edc6e6e5ba532f7b3d13"
+      sha256 "386a0f2c0571cf41ff6f9f351f6bf5c31940524b765f2519f4e1cddefba19ae5"
     end
   end
 
