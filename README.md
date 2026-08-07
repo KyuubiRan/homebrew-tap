@@ -1,35 +1,22 @@
 # homebrew-tap
 
-Homebrew tap for [hsin](https://github.com/KyuubiRan/hsin.rs).
+Personal [Homebrew](https://brew.sh) tap.
 
 ## Install
 
 ```bash
-brew install KyuubiRan/tap/hsin
+brew install KyuubiRan/tap/<formula>
 ```
 
-Then set up the background daemon:
+Or tap first, then install by bare name:
 
 ```bash
-hsind service install --start
-hsin
+brew tap KyuubiRan/tap
+brew install <formula>
 ```
 
-## Updating the formula for a new release
+## Formulae
 
-After publishing a release in `KyuubiRan/hsin.rs`:
-
-```bash
-scripts/update-formula.sh v0.1.0
-git commit -am "hsin 0.1.0"
-git push
-```
-
-The script pulls the release's `SHA256SUMS` asset and rewrites the version and
-all four platform checksums in `Formula/hsin.rb`.
-
-## Notes
-
-The daemon registers its own launchd/systemd service through
-`hsind service install`, so the formula deliberately does not define a Homebrew
-`service` block — two definitions would compete for the same IPC endpoint.
+| Formula | Description |
+| ------- | ----------- |
+| [hsin](https://github.com/KyuubiRan/hsin.rs) | Daemon-first provider switcher for Codex and Claude Code |

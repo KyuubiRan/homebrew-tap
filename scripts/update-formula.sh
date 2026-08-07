@@ -1,45 +1,63 @@
 #!/bin/sh
-# Update Formula/hsin.rb to a published hsin.rs release.
+# Update a formula in this tap to a published GitHub release.
 #
-# Usage: scripts/update-formula.sh v0.1.0
+# Usage: scripts/update-formula.sh <formula> <tag>
+#   e.g. scripts/update-formula.sh hsin v0.1.0
 #
-# Reads the SHA256SUMS asset attached to the release and rewrites the version
-# and every sha256 line in the formula.
+# The upstream repo is read from the formula's `homepage`. Every `url` line is
+# resolved against the release's SHA256SUMS asset and the sha256 line below it
+# is rewritten, along with the formula's version.
 set -eu
 
-tag="${1:?usage: scripts/update-formula.sh <tag>}"
+name="${1:?usage: scripts/update-formula.sh <formula> <tag>}"
+tag="${2:?usage: scripts/update-formula.sh <formula> <tag>}"
 version="${tag#v}"
-repo="KyuubiRan/hsin.rs"
-formula="$(dirname "$0")/../Formula/hsin.rb"
+formula="$(dirname "$0")/../Formula/${name}.rb"
+
+if [ ! -f "$formula" ]; then
+  echo "no such formula: $formula" >&2
+  exit 1
+fi
+
+repo="$(sed -n 's|^ *homepage "https://github.com/\([^/"]*/[^/"]*\)".*|\1|p' "$formula")"
+if [ -z "$repo" ]; then
+  echo "could not read a github repo from the homepage in $formula" >&2
+  exit 1
+fi
 
 sums="$(mktemp)"
 trap 'rm -f "$sums"' EXIT
 gh release download "$tag" --repo "$repo" --pattern SHA256SUMS --output "$sums" --clobber
 
-digest_for() {
-  awk -v want="hsin-${version}-$1.tar.gz" '$2 == want { print $1 }' "$sums"
-}
-
 sed -i.bak "s/^  version \".*\"$/  version \"${version}\"/" "$formula"
-
-for target in \
-  aarch64-apple-darwin \
-  aarch64-unknown-linux-gnu \
-  x86_64-unknown-linux-gnu
-do
-  digest="$(digest_for "$target")"
-  if [ -z "$digest" ]; then
-    echo "no checksum for $target in $tag SHA256SUMS" >&2
-    exit 1
-  fi
-  # Replace the sha256 on the line following this target's url line.
-  awk -v target="$target" -v digest="$digest" '
-    index($0, target ".tar.gz") { print; getline; sub(/"[^"]*"/, "\"" digest "\""); print; next }
-    { print }
-  ' "$formula" >"${formula}.tmp"
-  mv "${formula}.tmp" "$formula"
-done
-
 rm -f "${formula}.bak"
+
+# Pair each url line with the digest of the asset it points at, then replace the
+# sha256 on the line that follows it.
+if awk -v version="$version" '
+  NR == FNR { digest[$2] = $1; next }
+  /^ *url "/ {
+    print
+    asset = $0
+    sub(/^.*\//, "", asset)
+    sub(/".*$/, "", asset)
+    gsub(/#\{version\}/, version, asset)
+    if (!(asset in digest)) {
+      print "no checksum for " asset " in SHA256SUMS" > "/dev/stderr"
+      exit 1
+    }
+    getline
+    sub(/"[^"]*"/, "\"" digest[asset] "\"")
+    print
+    next
+  }
+  { print }
+' "$sums" "$formula" >"${formula}.tmp"; then
+  mv "${formula}.tmp" "$formula"
+else
+  rm -f "${formula}.tmp"
+  exit 1
+fi
+
 echo "updated $formula to ${version}"
 grep -E '^  version|sha256' "$formula"
