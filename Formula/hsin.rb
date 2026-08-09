@@ -1,26 +1,26 @@
 class Hsin < Formula
   desc "Daemon-first provider switcher for Codex and Claude Code"
   homepage "https://github.com/KyuubiRan/hsin.rs"
-  version "0.1.8"
+  version "0.2.0"
   license "MIT"
 
   depends_on arch: :arm64 if OS.mac?
 
   on_macos do
     on_arm do
-      url "https://github.com/KyuubiRan/hsin.rs/releases/download/v#{version}/hsin-#{version}-aarch64-apple-darwin.tar.gz"
-      sha256 "8218cd93563ce760ded8700cfcb73ffdee61752d9124f45d38c017faa431478b"
+      url "https://github.com/KyuubiRan/hsin.rs/releases/download/v#{version}/hsin-aarch64-apple-darwin.tar.gz"
+      sha256 "501e0f3db808c9b9d35140bb650ec2c2c3ac79d195c8ce177a6af0fd9aa20dc2"
     end
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/KyuubiRan/hsin.rs/releases/download/v#{version}/hsin-#{version}-aarch64-unknown-linux-gnu.tar.gz"
-      sha256 "c9b27cedf96161a26767d3d33096877c289cf6f52c1b052aec2771ee0aa0c2c5"
+      url "https://github.com/KyuubiRan/hsin.rs/releases/download/v#{version}/hsin-aarch64-unknown-linux-gnu.tar.gz"
+      sha256 "94f85dff35b3e16275290ddab7d7c684081035c2e14f108b4fb54df2860748ba"
     end
     on_intel do
-      url "https://github.com/KyuubiRan/hsin.rs/releases/download/v#{version}/hsin-#{version}-x86_64-unknown-linux-gnu.tar.gz"
-      sha256 "b56edbfde36cf016f9542db26b94b793c830c79ab26b4ab231571b8084362e74"
+      url "https://github.com/KyuubiRan/hsin.rs/releases/download/v#{version}/hsin-x86_64-unknown-linux-gnu.tar.gz"
+      sha256 "2eac6d2554ae7c2dbec7b16429dc77a43eaf27437fb278f45d077c9420558046"
     end
   end
 
@@ -29,19 +29,19 @@ class Hsin < Formula
   end
 
   # The daemon manages its own launchd/systemd definition through
-  # `hsind service install`, which copies the binaries into the hsin home and
+  # `hsin daemon install`, which copies the binaries into the hsin home and
   # registers them there. A Homebrew service block would register a second
   # definition competing for the same IPC endpoint, so it is omitted on purpose.
   def caveats
     <<~EOS
       Install and start the background daemon:
-        hsind service install --start
+        hsin daemon install --start
 
       Then open the terminal UI:
         hsin
 
       Remove the daemon before uninstalling this formula:
-        hsind service uninstall
+        hsin daemon uninstall
     EOS
   end
 
