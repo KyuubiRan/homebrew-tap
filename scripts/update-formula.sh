@@ -6,7 +6,7 @@
 #
 # The upstream repo is read from the formula's `homepage`. Every `url` line is
 # resolved against the release's SHA256SUMS asset and the sha256 line below it
-# is rewritten, along with the formula's version.
+# is rewritten, along with either an explicit version or the tag in release URLs.
 set -eu
 
 name="${1:?usage: scripts/update-formula.sh <formula> <tag>}"
@@ -29,7 +29,10 @@ sums="$(mktemp)"
 trap 'rm -f "$sums"' EXIT
 gh release download "$tag" --repo "$repo" --pattern SHA256SUMS --output "$sums" --clobber
 
-sed -i.bak "s/^  version \".*\"$/  version \"${version}\"/" "$formula"
+if grep -q '^  version ".*"$' "$formula"; then
+  sed -i.bak "s/^  version \".*\"$/  version \"${version}\"/" "$formula"
+fi
+sed -i.bak -E "s|(releases/download/)v[^/]+/|\\1${tag}/|g" "$formula"
 rm -f "${formula}.bak"
 
 # Pair each url line with the digest of the asset it points at, then replace the
@@ -60,4 +63,4 @@ else
 fi
 
 echo "updated $formula to ${version}"
-grep -E '^  version|sha256' "$formula"
+grep -E '^  version|releases/download|sha256' "$formula"
