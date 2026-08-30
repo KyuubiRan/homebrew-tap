@@ -7,19 +7,19 @@ class Hsin < Formula
 
   on_macos do
     on_arm do
-      url "https://github.com/KyuubiRan/hsin.rs/releases/download/v0.2.2/hsin-aarch64-apple-darwin.tar.gz"
-      sha256 "eb580a6782e7bb2d5aee81709973a67c67748a98c39743b5a0d577021b810bae"
+      url "https://github.com/KyuubiRan/hsin.rs/releases/download/v0.2.3/hsin-aarch64-apple-darwin.tar.gz"
+      sha256 "0a59524786b0c9c5d6f3e12a55119671bb23b78e60a5052f83f08e0364a1a621"
     end
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/KyuubiRan/hsin.rs/releases/download/v0.2.2/hsin-aarch64-unknown-linux-gnu.tar.gz"
-      sha256 "a36aaa9f1877be9e7a5dd7d2337fdef2de3e6d84d31b4c3d360104c678197d3d"
+      url "https://github.com/KyuubiRan/hsin.rs/releases/download/v0.2.3/hsin-aarch64-unknown-linux-gnu.tar.gz"
+      sha256 "8e8c4f0c88bfd6d5b03039091cae2918682c7cdaf9f88c55f12531daf24d038f"
     end
     on_intel do
-      url "https://github.com/KyuubiRan/hsin.rs/releases/download/v0.2.2/hsin-x86_64-unknown-linux-gnu.tar.gz"
-      sha256 "4307540a37d843579ef8f6c68ff2510390337fea9909905fdfd5b7dcd600288c"
+      url "https://github.com/KyuubiRan/hsin.rs/releases/download/v0.2.3/hsin-x86_64-unknown-linux-gnu.tar.gz"
+      sha256 "fd8201bd6bdf7a41e14d38f87b7f2d82e100530b3897a9796626a58c67133be6"
     end
   end
 
